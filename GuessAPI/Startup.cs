@@ -44,12 +44,12 @@ namespace GuessAPI
                 {
                     Title = "Guess API",
                     Version = "v1",
-                    Description = "A web API providing a custom toolkit for YouTube video transcription.",
+                    Description = "A web API for making a quiz game",
                     Contact = new Contact
                     {
-                        Name = "MSA 2019 - Phase 2",
-                        Email = "nzmsa@microsoft.com",
-                        Url = "https://github.com/NZMSA/2018-Phase-2"
+                        Name = "Sakyawira Nanda Ruslim",
+                        Email = "sakyawira@gmail.com",
+                        Url = "https://github.com/Sakyawira/GuessSongAPI"
                     },
                 });
             });
