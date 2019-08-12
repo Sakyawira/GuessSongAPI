@@ -13,9 +13,9 @@ namespace GuessAPI.Controllers
     [ApiController]
     public class TranscriptionsController : ControllerBase
     {
-        private readonly scriberContext _context;
+        private readonly guessContext _context;
 
-        public TranscriptionsController(scriberContext context)
+        public TranscriptionsController(guessContext context)
         {
             _context = context;
         }

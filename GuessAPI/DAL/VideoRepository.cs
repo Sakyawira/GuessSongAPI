@@ -9,9 +9,9 @@ namespace GuessAPI.DAL
 {
     public class VideoRepository : IVideoRepository, IDisposable
     {
-        private scriberContext context;
+        private guessContext context;
 
-        public VideoRepository(scriberContext context)
+        public VideoRepository(guessContext context)
         {
             this.context = context;
         }

@@ -25,13 +25,13 @@ namespace GuessAPI.Controllers
     {
         private IVideoRepository videoRepository;
         private readonly IMapper _mapper;
-        private readonly scriberContext _context;
+        private readonly guessContext _context;
 
-        public VideosController(scriberContext context, IMapper mapper)
+        public VideosController(guessContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            this.videoRepository = new VideoRepository(new scriberContext());
+            this.videoRepository = new VideoRepository(new guessContext());
         }
 
         // GET: api/Videos
@@ -141,7 +141,7 @@ namespace GuessAPI.Controllers
             {
                 // Constructing the video object from our helper function
                 videoURL = data.URL;
-                videoId = YouTubeHelper.GetVideoIdFromURL(videoURL);
+                videoId = YouTubeHelper.GetVideoIDfromLINK(videoURL);
                 video = YouTubeHelper.GetVideoInfo(videoId);
             }
             catch
@@ -167,7 +167,7 @@ namespace GuessAPI.Controllers
             // This is needed because context are NOT thread safe, therefore we create another context for the following task.
             // We will be using this to insert transcriptions into the database on a seperate thread
             // So that it doesn't block the API.
-            scriberContext tempContext = new scriberContext();
+            guessContext tempContext = new guessContext();
             TranscriptionsController transcriptionsController = new TranscriptionsController(tempContext);
 
             // This will be executed in the background.

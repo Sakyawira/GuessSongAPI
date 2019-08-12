@@ -12,9 +12,9 @@ namespace GuessAPI.Model
     [ApiController]
     public class LeaderBoardsController : ControllerBase
     {
-        private readonly scriberContext _context;
+        private readonly guessContext _context;
 
-        public LeaderBoardsController(scriberContext context)
+        public LeaderBoardsController(guessContext context)
         {
             _context = context;
         }

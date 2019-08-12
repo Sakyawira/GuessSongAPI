@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GuessAPI.Model
 {
-    public partial class scriberContext : DbContext
+    public partial class guessContext : DbContext
     {
-        public scriberContext()
+        public guessContext()
         {
         }
 
-        public scriberContext(DbContextOptions<scriberContext> options)
+        public guessContext(DbContextOptions<guessContext> options)
             : base(options)
         {
         }
@@ -25,7 +25,7 @@ namespace GuessAPI.Model
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:nzmsasakyawira.database.windows.net,1433;Initial Catalog=scriber;Persist Security Info=False;User ID=sakyawira;Password=__Naruto55__;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer("Server=tcp:nzmsasakyawira.database.windows.net,1433;Initial Catalog=guess;Persist Security Info=False;User ID=sakyawira;Password=__Naruto55__;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
