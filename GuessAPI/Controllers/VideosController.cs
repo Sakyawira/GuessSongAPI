@@ -141,7 +141,7 @@ namespace GuessAPI.Controllers
             {
                 // Constructing the video object from our helper function
                 videoURL = data.URL;
-                videoId = YouTubeHelper.GetVideoIDfromLINK(videoURL);
+                videoId = YouTubeHelper.GetVideoIdFromURL(videoURL);
                 video = YouTubeHelper.GetVideoInfo(videoId);
             }
             catch
