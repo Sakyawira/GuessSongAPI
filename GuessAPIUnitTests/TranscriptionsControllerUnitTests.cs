@@ -13,9 +13,7 @@ namespace GuessAPIUnitTests
     class TranscriptionsControllerUnitTests
     {
         public static readonly DbContextOptions<guessContext> options
-        = new DbContextOptionsBuilder<guessContext>()
-    .UseInMemoryDatabase(databaseName: "testDatabase")
-            .Options;
+        = new DbContextOptionsBuilder<guessContext>().UseInMemoryDatabase(databaseName: "testDatabase").Options;
 
     }
 }
