@@ -80,11 +80,15 @@ namespace GuessAPI.Controllers
             videos.RemoveAll(video => video.Transcription.Count == 0);
             int iCount = 0;
 
-            if (videos.Count >= 1)
+            if (videos.Count > 1)
             {
-                iCount = videos.Count;
+                iCount = videos.Count - 1;
                 videos.RemoveRange(1, iCount);
             }
+            //else if (videos.Count == 1)
+            //{
+            //    videos.RemoveRange(1, 1);
+            //}
            
             //videos[0].IsFavourite = true;
             return Ok(videos);

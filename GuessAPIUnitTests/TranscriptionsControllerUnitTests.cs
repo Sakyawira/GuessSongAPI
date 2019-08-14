@@ -62,8 +62,6 @@ namespace GuessAPIUnitTests
             }
         }
 
-
-
         [TestCleanup]
         public void ClearDb()
         {
