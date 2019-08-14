@@ -101,7 +101,21 @@ namespace GuessAPI.Helper
 
             // Use XmlDocument to load the subtitle XML.
             XmlDocument doc = new XmlDocument();
-            doc.Load(subtitleLink);
+            try
+            {
+                doc.Load(subtitleLink);
+            }
+            catch
+            {
+                doc.Load(subtitleLink + "-US");
+            }
+           
+            //if (doc.ChildNodes[1].InnerText == "")
+            //{
+            //    doc.Load(subtitleLink + "-US");
+            //}
+         
+
             XmlNode root = doc.ChildNodes[1];
 
             // Go through each tag and look for start time and phrase.
