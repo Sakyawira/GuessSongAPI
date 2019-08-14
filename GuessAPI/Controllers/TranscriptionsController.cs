@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory;
 using GuessAPI.Model;
 
 namespace GuessAPI.Controllers
@@ -77,8 +78,15 @@ namespace GuessAPI.Controllers
 
             // Removes all videos with empty transcription
             videos.RemoveAll(video => video.Transcription.Count == 0);
-            videos.RemoveRange(1, videos.Count - 1);
-            videos[0].IsFavourite = true;
+            int iCount = 0;
+
+            if (videos.Count >= 1)
+            {
+                iCount = videos.Count;
+                videos.RemoveRange(1, iCount);
+            }
+           
+            //videos[0].IsFavourite = true;
             return Ok(videos);
 
         }
