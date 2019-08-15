@@ -30,11 +30,11 @@ namespace GuessAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<guessContext>(options => options.UseSqlServer(Configuration.GetConnectionString("GuessDatabase")));
+            services.AddDbContext<GuessContext>(options => options.UseSqlServer(Configuration.GetConnectionString("GuessDatabase")));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).AddJsonOptions(
             options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-            services.AddDbContext<guessContext>();
+            services.AddDbContext<GuessContext>();
             services.AddAutoMapper(typeof(Startup));
 
             // Register the Swagger generator, defining 1 or more Swagger documents

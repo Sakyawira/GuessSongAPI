@@ -14,11 +14,11 @@ namespace GuessAPIUnitTests
     [TestClass]
     public class TranscriptionsControllerUnitTests
     {
-        public static readonly DbContextOptions<guessContext> options
-        = new DbContextOptionsBuilder<guessContext>().UseInMemoryDatabase(databaseName: "testDatabase").Options;
+        public static readonly DbContextOptions<GuessContext> Options
+        = new DbContextOptionsBuilder<GuessContext>().UseInMemoryDatabase(databaseName: "testDatabase").Options;
 
 
-        public static readonly IList<Transcription> transcriptions = new List<Transcription>
+        public static readonly IList<Transcription> Transcriptions = new List<Transcription>
         {
             new Transcription()
             {
@@ -31,7 +31,7 @@ namespace GuessAPIUnitTests
 
             
         };
-        public static readonly IList<Video> videos = new List<Video>
+        public static readonly IList<Video> Videos = new List<Video>
         {
              new Video()
             {
@@ -48,11 +48,11 @@ namespace GuessAPIUnitTests
         [TestInitialize]
         public void SetupDb()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // populate the db
-                context.Transcription.Add(transcriptions[0]);
-                context.Transcription.Add(transcriptions[1]);
+                context.Transcription.Add(Transcriptions[0]);
+                context.Transcription.Add(Transcriptions[1]);
 
                 // populate videos db
                 //context.Video.Add(videos[0]);
@@ -65,7 +65,7 @@ namespace GuessAPIUnitTests
         [TestCleanup]
         public void ClearDb()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // clear the db
                 context.Transcription.RemoveRange(context.Transcription);
@@ -76,7 +76,7 @@ namespace GuessAPIUnitTests
         [TestMethod]
         public async Task TestGetRandomTranscription()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // make a new transcription controller
                 TranscriptionsController transcriptionsController = new TranscriptionsController(context);
@@ -93,7 +93,7 @@ namespace GuessAPIUnitTests
         [TestMethod]
         public async Task TestGetSuccessfully()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // make a new transcription controller
                 TranscriptionsController transcriptionsController = new TranscriptionsController(context);
@@ -110,10 +110,10 @@ namespace GuessAPIUnitTests
         [TestMethod]
         public async Task TestPutTranscriptionNoContentStatusCode()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 string newPhrase = "this is now a different phrase";
-                Transcription transcription1 = context.Transcription.Where(x => x.Phrase == transcriptions[0].Phrase).Single();
+                Transcription transcription1 = context.Transcription.Where(x => x.Phrase == Transcriptions[0].Phrase).Single();
                 transcription1.Phrase = newPhrase;
 
                 TranscriptionsController transcriptionsController = new TranscriptionsController(context);

@@ -15,10 +15,10 @@ namespace GuessAPIUnitTests
     [TestClass]
     public class VideosControllerUnitTests
     {
-        public static readonly DbContextOptions<guessContext> options
-       = new DbContextOptionsBuilder<guessContext>().UseInMemoryDatabase(databaseName: "testDatabase").Options;
+        public static readonly DbContextOptions<GuessContext> Options
+       = new DbContextOptionsBuilder<GuessContext>().UseInMemoryDatabase(databaseName: "testDatabase").Options;
 
-        public static readonly IList<Video> videos = new List<Video>
+        public static readonly IList<Video> Videos = new List<Video>
         {
              new Video()
             {
@@ -33,40 +33,40 @@ namespace GuessAPIUnitTests
         };
 
         private readonly IMapper _mapper;
-        public static URLDTO _URL = new URLDTO();
+        public static Urldto Url = new Urldto();
         
 
         [TestInitialize]
         public void SetupDb()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                // populate videos db
-                context.Video.Add(videos[0]);
+                context.Video.Add(Videos[0]);
                 //context.Video.Add(videos[1]);
 
                 context.SaveChanges();
             }
-            _URL.URL = "https://www.youtube.com/watch?v=uIAScvNDQpI";
+            Url.Url = "https://www.youtube.com/watch?v=uIAScvNDQpI";
         }
 
         [TestCleanup]
         public void ClearDb()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // clear the db
                 context.Video.RemoveRange(context.Video);
                 context.SaveChanges();
             };
-            _URL.URL = "";
+            Url.Url = "";
         }
 
         [TestMethod]
         public async Task TestGetRandomVideo()
         {
 
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // make a new video controller
                 VideosController videosController = new VideosController(context, _mapper);
@@ -84,13 +84,13 @@ namespace GuessAPIUnitTests
         public async Task TestPostVideo()
         {
 
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // make a new video controller
                 VideosController videosController = new VideosController(context, _mapper);
 
                 // get the result of GetRandomVideo method
-                ActionResult<Video> result = await videosController.PostVideo(_URL);
+                ActionResult<Video> result = await videosController.PostVideo(Url);
 
                 // see if the result is null
                 Assert.IsNotNull(result);

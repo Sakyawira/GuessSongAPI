@@ -11,40 +11,42 @@ namespace GuessAPI.Helper
 {
     class YouTubeHelper
     {
-        public static void testProgram()
+        public static void TestProgram()
         {
-            Console.WriteLine(GetVideoIdFromURL("=HELLO"));
+            Console.WriteLine(GetVideoIdFromUrl("=HELLO"));
             Console.ReadLine();
         }
 
-        // Get the video id from a url
-        public static String GetVideoIdFromURL(String videoURL) {
-            // Extract the string after the '=' sign
-            // e.g. https://www.youtube.com/watch?v=ehvz3iN8pp4 becomes ehvz3iN8pp4 
-            int indexOfFirstId = videoURL.IndexOf("=") + 1;
-            String videoId = videoURL.Substring(indexOfFirstId);
-            return videoId;
+        // Get the Youtube video id from video's url
+        public static String GetVideoIdFromUrl(String videoUrl) {
+
+            // Get the string after the equal ('=') sign
+            int indexOfFirstId = videoUrl.IndexOf("=", StringComparison.Ordinal) + 1;
+
+            String youtubeId = videoUrl.Substring(indexOfFirstId);
+
+            return youtubeId;
         }
 
         // Get video from video id
-        public static Video GetVideoInfo(String videoId)
+        public static Video GetVideoInfo(String youtubeId)
         {
-            String APIKey = "AIzaSyBqwfIVpvsm_0sbGEGAfr08qivmYmKdXEQ";
+            String apiKey = "AIzaSyBqwfIVpvsm_0sbGEGAfr08qivmYmKdXEQ";
 
-            // construct the youtube api link to get infromation about the video
-            String YouTubeAPIURL = "https://www.googleapis.com/youtube/v3/videos?id=" + videoId + "&key=" + APIKey + "&part=snippet,contentDetails";
+            // create a youtube api link using the youtube video id and api key to get information of the video
+            String YouTubeApiUrL = "https://www.googleapis.com/youtube/v3/videos?id=" + youtubeId + "&key=" + apiKey + "&part=snippet,contentDetails";
 
-            // Use an http client to grab the JSON string from the web.
-            String videoInfoJSON = new WebClient().DownloadString(YouTubeAPIURL);
+            // Grab the JSON string from the api link using an http client.
+            String videoInfoJson = new WebClient().DownloadString(YouTubeApiUrL);
 
             // Using dynamic object helps us to more effciently extract infomation from a large JSON String.
-            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(videoInfoJSON);
+            dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(videoInfoJson);
 
             // Extract information from the dynamic object.
             String title = jsonObj["items"][0]["snippet"]["title"];
-            String thumbnailURL = jsonObj["items"][0]["snippet"]["thumbnails"]["medium"]["url"];
+            String thumbnailUrl = jsonObj["items"][0]["snippet"]["thumbnails"]["medium"]["url"];
             String durationString = jsonObj["items"][0]["contentDetails"]["duration"];
-            String videoUrl = "https://www.youtube.com/watch?v=" + videoId;
+            String videoUrl = "https://www.youtube.com/watch?v=" + youtubeId;
 
             // duration is given in this format: PT4M17S, we need to use a simple parser to get the duration in seconds.
             TimeSpan videoDuration = XmlConvert.ToTimeSpan(durationString);
@@ -57,15 +59,15 @@ namespace GuessAPI.Helper
                 WebUrl = videoUrl,
                 VideoLength = duration,
                 IsFavourite = false,
-                ThumbnailUrl = thumbnailURL
+                ThumbnailUrl = thumbnailUrl
             };
 
             return video;
         }
 
-        public static Boolean CanGetTranscriptions(String videoId)
+        public static Boolean CanGetTranscriptions(String youtubeId)
         {
-            if (GetTranscriptionLink(videoId) == null)
+            if (GetTranscriptionLink(youtubeId) == null)
             {
                 return false;
             }
@@ -73,15 +75,15 @@ namespace GuessAPI.Helper
             return true;
         }
 
-        private static String GetTranscriptionLink(String videoId)
+        private static String GetTranscriptionLink(String youtubeId)
         {
-            String YouTubeVideoURL = "https://www.youtube.com/watch?v=" + videoId;
+            String youTubeVideoUrl = "https://www.youtube.com/watch?v=" + youtubeId;
             // Use a WebClient to download the source code.
-            String HTMLSource = new WebClient().DownloadString(YouTubeVideoURL);
+            String htmlSource = new WebClient().DownloadString(youTubeVideoUrl);
 
             // Use regular expression to find the link with the transcription
             String pattern = "timedtext.+?lang=";
-            Match match = Regex.Match(HTMLSource, pattern);
+            Match match = Regex.Match(htmlSource, pattern);
             if (match.ToString() != "")
             {
                 String subtitleLink = "https://www.youtube.com/api/" + match + "en";
@@ -114,12 +116,6 @@ namespace GuessAPI.Helper
                 doc.Load(subtitleLink + "-US");
             }
            
-            //if (doc.ChildNodes[1].InnerText == "")
-            //{
-            //    doc.Load(subtitleLink + "-US");
-            //}
-         
-
             XmlNode root = doc.ChildNodes[1];
 
             // Go through each tag and look for start time and phrase.
@@ -145,11 +141,11 @@ namespace GuessAPI.Helper
             return transcriptions;
         }
         
-        private static String CleanLink(String subtitleURL)
+        private static String CleanLink(String subtitleUrl)
         {
-            subtitleURL = subtitleURL.Replace("\\\\u0026", "&");
-            subtitleURL = subtitleURL.Replace("\\", "");
-            return (subtitleURL);
+            subtitleUrl = subtitleUrl.Replace("\\\\u0026", "&");
+            subtitleUrl = subtitleUrl.Replace("\\", "");
+            return (subtitleUrl);
         }
 
       

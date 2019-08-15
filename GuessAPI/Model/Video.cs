@@ -35,7 +35,7 @@ namespace GuessAPI.Model
     }
 
     [DataContract]
-    public class VideoDTO
+    public class VideoDto
     {
         [DataMember]
         public int VideoId { get; set; }

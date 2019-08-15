@@ -14,24 +14,24 @@ namespace GuessAPI.Controllers
 {
     // DTO (Data Transfer object) inner class to help with Swagger documentation
     // Allow swagger ui to recognize the url to display it in the swagger ui
-    public class URLDTO
+    public class Urldto
     {
-        public String URL { get; set; }
+        public String Url { get; set; }
     }
 
     [Route("api/[controller]")]
     [ApiController]
     public class VideosController : ControllerBase
     {
-        private IVideoRepository videoRepository;
+        private IVideoRepository _videoRepository;
         private readonly IMapper _mapper;
-        private readonly guessContext _context;
+        private readonly GuessContext _context;
 
-        public VideosController(guessContext context, IMapper mapper)
+        public VideosController(GuessContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            this.videoRepository = new VideoRepository(new guessContext());
+            this._videoRepository = new VideoRepository(new GuessContext());
         }
 
         // GET: api/Videos
@@ -89,7 +89,7 @@ namespace GuessAPI.Controllers
 
         //PUT with PATCH to handle CancelisFavourite
         [HttpPatch("CancelFav/")]
-        public async Task<IActionResult> Cancel([FromBody]JsonPatchDocument<VideoDTO> videoPatch)
+        public async Task<IActionResult> Cancel([FromBody]JsonPatchDocument<VideoDto> videoPatch)
         {
             var sizeOfList = _context.Video.ToListAsync().Result.Count;
             //Video originVideo = videoRepository.GetVideoByID(_context.Video.ToListAsync().Result[sizeOfList-1].VideoId);
@@ -114,34 +114,34 @@ namespace GuessAPI.Controllers
 
         //PUT with PATCH to handle isFavourite
         [HttpPatch("update/{id}")]
-        public VideoDTO Patch(int id, [FromBody]JsonPatchDocument<VideoDTO> videoPatch)
+        public VideoDto Patch(int id, [FromBody]JsonPatchDocument<VideoDto> videoPatch)
         {
             //get original video object from the database
-            Video originVideo = videoRepository.GetVideoByID(id);
+            Video originVideo = _videoRepository.GetVideoById(id);
             //use automapper to map that to DTO object
-            VideoDTO videoDTO = _mapper.Map<VideoDTO>(originVideo);
+            VideoDto videoDto = _mapper.Map<VideoDto>(originVideo);
             //apply the patch to that DTO
-            videoPatch.ApplyTo(videoDTO);
+            videoPatch.ApplyTo(videoDto);
             //use automapper to map the DTO back ontop of the database object
-            _mapper.Map(videoDTO, originVideo);
+            _mapper.Map(videoDto, originVideo);
             //update video in the database
             _context.Update(originVideo);
             _context.SaveChanges();
-            return videoDTO;
+            return videoDto;
         }
 
         // POST: api/Videos
         [HttpPost]
-        public async Task<ActionResult<Video>> PostVideo([FromBody]URLDTO data)
+        public async Task<ActionResult<Video>> PostVideo([FromBody]Urldto data)
         {
-            String videoURL;
+            String videoUrl;
             String videoId;
             Video video;
             try
             {
                 // Constructing the video object from our helper function
-                videoURL = data.URL;
-                videoId = YouTubeHelper.GetVideoIdFromURL(videoURL);
+                videoUrl = data.Url;
+                videoId = YouTubeHelper.GetVideoIdFromUrl(videoUrl);
                 video = YouTubeHelper.GetVideoInfo(videoId);
             }
             catch
@@ -167,7 +167,7 @@ namespace GuessAPI.Controllers
             // This is needed because context are NOT thread safe, therefore we create another context for the following task.
             // We will be using this to insert transcriptions into the database on a seperate thread
             // So that it doesn't block the API.
-            guessContext tempContext = new guessContext();
+            GuessContext tempContext = new GuessContext();
             TranscriptionsController transcriptionsController = new TranscriptionsController(tempContext);
 
             // This will be executed in the background.
@@ -245,7 +245,7 @@ namespace GuessAPI.Controllers
             // Removes all videos with empty transcription
 
             var sizeOfList = _context.Video.ToListAsync().Result.Count;
-            bool isget = false;
+            bool isGet = false;
 
             // initialize transcription
             var ivideo = await _context.Video.FindAsync(0);
@@ -262,7 +262,7 @@ namespace GuessAPI.Controllers
             }).ToListAsync();
 
             // only break after it finds a non-null transcription
-            while (isget == false)
+            while (isGet == false)
             {
                 // randomize the id
                 Random rnd = new Random();
@@ -289,7 +289,7 @@ namespace GuessAPI.Controllers
 
                 if (ivideo != null)
                 {
-                    isget = true;
+                    isGet = true;
                 }
 
                 videos.RemoveAll(video => video.Transcription.Count == 0);

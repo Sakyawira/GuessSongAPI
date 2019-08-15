@@ -6,8 +6,8 @@ namespace GuessAPI.Model
     {
         public MapperProfile()
         {
-            CreateMap<Video, VideoDTO>();
-            CreateMap<VideoDTO, Video>();
+            CreateMap<Video, VideoDto>();
+            CreateMap<VideoDto, Video>();
         }
     }
 }

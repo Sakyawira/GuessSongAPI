@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GuessAPI.Model
 {
-    public partial class guessContext : DbContext
+    public partial class GuessContext : DbContext
     {
-        public guessContext()
+        public GuessContext()
         {
         }
 
-        public guessContext(DbContextOptions<guessContext> options)
+        public GuessContext(DbContextOptions<GuessContext> options)
             : base(options)
         {
         }

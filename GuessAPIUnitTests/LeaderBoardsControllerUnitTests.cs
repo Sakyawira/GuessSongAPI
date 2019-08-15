@@ -14,10 +14,10 @@ namespace GuessAPIUnitTests
     [TestClass]
     public class LeaderBoardsControllerUnitTests
     {
-        public static readonly DbContextOptions<guessContext> options
-       = new DbContextOptionsBuilder<guessContext>().UseInMemoryDatabase(databaseName: "testDatabase").Options;
+        public static readonly DbContextOptions<GuessContext> Options
+       = new DbContextOptionsBuilder<GuessContext>().UseInMemoryDatabase(databaseName: "testDatabase").Options;
 
-        public static readonly IList<LeaderBoard> leaderBoards = new List<LeaderBoard>
+        public static readonly IList<LeaderBoard> LeaderBoards = new List<LeaderBoard>
         {
              new LeaderBoard()
             {
@@ -35,11 +35,11 @@ namespace GuessAPIUnitTests
         [TestInitialize]
         public void SetupDb()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // populate the db
-                context.LeaderBoard.Add(leaderBoards[0]);
-                context.LeaderBoard.Add(leaderBoards[1]);
+                context.LeaderBoard.Add(LeaderBoards[0]);
+                context.LeaderBoard.Add(LeaderBoards[1]);
 
                 context.SaveChanges();
             }
@@ -48,7 +48,7 @@ namespace GuessAPIUnitTests
         [TestCleanup]
         public void ClearDb()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // clear the db
                 context.LeaderBoard.RemoveRange(context.LeaderBoard);
@@ -59,7 +59,7 @@ namespace GuessAPIUnitTests
         [TestMethod]
         public async Task TestGetSuccessfully()
         {
-            using (var context = new guessContext(options))
+            using (var context = new GuessContext(Options))
             {
                 // make a new transcription controller
                 LeaderBoardsController leaderBoardsController = new LeaderBoardsController(context);

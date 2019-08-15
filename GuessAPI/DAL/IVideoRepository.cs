@@ -7,9 +7,9 @@ namespace GuessAPI.DAL
     public interface IVideoRepository : IDisposable
     {
         IEnumerable<Video> GetVideos();
-        Video GetVideoByID(int VideoId);
+        Video GetVideoById(int videoId);
         void InsertVideo(Video video);
-        void DeleteVideo(int VideoId);
+        void DeleteVideo(int videoId);
         void UpdateVideo(Video video);
         void Save();
     }

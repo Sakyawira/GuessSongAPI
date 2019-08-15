@@ -9,55 +9,55 @@ namespace GuessAPI.DAL
 {
     public class VideoRepository : IVideoRepository, IDisposable
     {
-        private guessContext context;
+        private GuessContext _context;
 
-        public VideoRepository(guessContext context)
+        public VideoRepository(GuessContext context)
         {
-            this.context = context;
+            this._context = context;
         }
 
         public IEnumerable<Video> GetVideos()
         {
-            return context.Video.ToList();
+            return _context.Video.ToList();
         }
 
-        public Video GetVideoByID(int id)
+        public Video GetVideoById(int id)
         {
-            return context.Video.Find(id);
+            return _context.Video.Find(id);
         }
 
         public void InsertVideo(Video video)
         {
-            context.Video.Add(video);
+            _context.Video.Add(video);
         }
 
         public void DeleteVideo(int videoId)
         {
-            Video video = context.Video.Find(videoId);
-            context.Video.Remove(video);
+            Video video = _context.Video.Find(videoId);
+            _context.Video.Remove(video);
         }
 
         public void UpdateVideo(Video video)
         {
-            context.Entry(video).State = EntityState.Modified;
+            _context.Entry(video).State = EntityState.Modified;
         }
 
         public void Save()
         {
-            context.SaveChanges();
+            _context.SaveChanges();
         }
-        private bool disposed = false;
+        private bool _disposed = false;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!this._disposed)
             {
                 if (disposing)
                 {
-                    context.Dispose();
+                    _context.Dispose();
                 }
             }
-            this.disposed = true;
+            this._disposed = true;
         }
 
         public void Dispose()
