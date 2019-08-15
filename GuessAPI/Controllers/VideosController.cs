@@ -41,7 +41,6 @@ namespace GuessAPI.Controllers
             return await _context.Video.ToListAsync();
         }
 
-     
 
         // GET: api/Videos/5
         [HttpGet("{id}")]
@@ -87,30 +86,6 @@ namespace GuessAPI.Controllers
             return NoContent();
         }
 
-        //PUT with PATCH to handle CancelisFavourite
-        [HttpPatch("CancelFav/")]
-        public async Task<IActionResult> Cancel([FromBody]JsonPatchDocument<VideoDto> videoPatch)
-        {
-            var sizeOfList = _context.Video.ToListAsync().Result.Count;
-            //Video originVideo = videoRepository.GetVideoByID(_context.Video.ToListAsync().Result[sizeOfList-1].VideoId);
-            //VideoDTO videoDTO = _mapper.Map<VideoDTO>(originVideo);
-            for (int i = 0; i <= sizeOfList; i++)
-            {
-                Patch(_context.Video.ToListAsync().Result[i].VideoId, videoPatch);
-                ////get original video object from the database
-                //originVideo = videoRepository.GetVideoByID(_context.Video.ToListAsync().Result[i].VideoId);
-                ////use automapper to map that to DTO object
-                //videoDTO = _mapper.Map<VideoDTO>(originVideo);
-                ////apply the patch to that DTO
-                //videoPatch.ApplyTo(videoDTO);
-                ////use automapper to map the DTO back ontop of the database object
-                //_mapper.Map(videoDTO, originVideo);
-                ////update video in the database
-                //_context.Update(originVideo);
-                //_context.SaveChanges();
-            }
-            return NoContent(); 
-        }
 
         //PUT with PATCH to handle isFavourite
         [HttpPatch("update/{id}")]
@@ -135,14 +110,14 @@ namespace GuessAPI.Controllers
         public async Task<ActionResult<Video>> PostVideo([FromBody]Urldto data)
         {
             String videoUrl;
-            String videoId;
+            String youtubeId;
             Video video;
             try
             {
                 // Constructing the video object from our helper function
                 videoUrl = data.Url;
-                videoId = YouTubeHelper.GetVideoIdFromUrl(videoUrl);
-                video = YouTubeHelper.GetVideoInfo(videoId);
+                youtubeId = YouTubeHelper.GetYouTubeIdFromUrl(videoUrl);
+                video = YouTubeHelper.GetVideoInfo(youtubeId);
             }
             catch
             {
@@ -150,7 +125,7 @@ namespace GuessAPI.Controllers
             }
 
             // Determine if we can get transcriptions from YouTube
-            if (!YouTubeHelper.CanGetTranscriptions(videoId))
+            if (!YouTubeHelper.CanGetTranscriptions(youtubeId))
             {
                 return BadRequest("Subtitle does not exist on YouTube, failed to add video");
             }
@@ -174,7 +149,7 @@ namespace GuessAPI.Controllers
             Task addCaptions = Task.Run(async () =>
             {
                 List<Transcription> transcriptions = new List<Transcription>();
-                transcriptions = YouTubeHelper.GetTranscriptions(videoId);
+                transcriptions = YouTubeHelper.GetTranscriptions(youtubeId);
 
                 for (int i = 0; i < transcriptions.Count; i++)
                 {

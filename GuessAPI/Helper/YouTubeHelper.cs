@@ -11,14 +11,14 @@ namespace GuessAPI.Helper
 {
     class YouTubeHelper
     {
-        public static void TestProgram()
-        {
-            Console.WriteLine(GetVideoIdFromUrl("=HELLO"));
-            Console.ReadLine();
-        }
+        //public static void TestProgram()
+        //{
+        //    Console.WriteLine(GetYouTubeIdFromUrl("=HELLO"));
+        //    Console.ReadLine();
+        //}
 
         // Get the Youtube video id from video's url
-        public static String GetVideoIdFromUrl(String videoUrl) {
+        public static String GetYouTubeIdFromUrl(String videoUrl) {
 
             // Get the string after the equal ('=') sign
             int indexOfFirstId = videoUrl.IndexOf("=", StringComparison.Ordinal) + 1;
@@ -28,7 +28,7 @@ namespace GuessAPI.Helper
             return youtubeId;
         }
 
-        // Get video from video id
+        // Get video from video's youtube id
         public static Video GetVideoInfo(String youtubeId)
         {
             String apiKey = "AIzaSyBqwfIVpvsm_0sbGEGAfr08qivmYmKdXEQ";
@@ -78,7 +78,9 @@ namespace GuessAPI.Helper
         private static String GetTranscriptionLink(String youtubeId)
         {
             String youTubeVideoUrl = "https://www.youtube.com/watch?v=" + youtubeId;
-            // Use a WebClient to download the source code.
+
+            // Grab the JSON string from the api link using an http client.
+            // Download the source code using a Web Client.
             String htmlSource = new WebClient().DownloadString(youTubeVideoUrl);
 
             // Use regular expression to find the link with the transcription
@@ -86,9 +88,9 @@ namespace GuessAPI.Helper
             Match match = Regex.Match(htmlSource, pattern);
             if (match.ToString() != "")
             {
-                String subtitleLink = "https://www.youtube.com/api/" + match + "en";
-                subtitleLink = CleanLink(subtitleLink);
-                return subtitleLink;
+                String transcriptionLink = "https://www.youtube.com/api/" + match + "en";
+                transcriptionLink = CleanLink(transcriptionLink);
+                return transcriptionLink;
             }
             else
             {
@@ -99,21 +101,21 @@ namespace GuessAPI.Helper
         // Get list of transcription from video id
         public static List<Transcription> GetTranscriptions(String videoId)
         {
-            String subtitleLink = GetTranscriptionLink(videoId);
+            String transcriptionLink = GetTranscriptionLink(videoId);
 
             XmlDocument doc = new XmlDocument();
 
 
-            // try to Use XmlDocument to load the subtitle XML.
+            // try to Use XmlDocument to load the transcription XML.
             try
             {
-                doc.Load(subtitleLink);
+                doc.Load(transcriptionLink);
             }
 
-            // load the US version of the caption if fail
+            // load the US version of the transcription if fail
             catch
             {
-                doc.Load(subtitleLink + "-US");
+                doc.Load(transcriptionLink + "-US");
             }
            
             XmlNode root = doc.ChildNodes[1];
@@ -141,11 +143,11 @@ namespace GuessAPI.Helper
             return transcriptions;
         }
         
-        private static String CleanLink(String subtitleUrl)
+        private static String CleanLink(String transcriptionLink)
         {
-            subtitleUrl = subtitleUrl.Replace("\\\\u0026", "&");
-            subtitleUrl = subtitleUrl.Replace("\\", "");
-            return (subtitleUrl);
+            transcriptionLink = transcriptionLink.Replace("\\\\u0026", "&");
+            transcriptionLink = transcriptionLink.Replace("\\", "");
+            return (transcriptionLink);
         }
 
       
