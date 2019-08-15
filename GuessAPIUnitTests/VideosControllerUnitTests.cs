@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace GuessAPIUnitTests
 {
@@ -31,6 +32,8 @@ namespace GuessAPIUnitTests
             }
         };
 
+        private readonly IMapper _mapper;
+
         [TestInitialize]
         public void SetupDb()
         {
@@ -38,7 +41,7 @@ namespace GuessAPIUnitTests
             {
                // populate videos db
                 context.Video.Add(videos[0]);
-                context.Video.Add(videos[1]);
+                //context.Video.Add(videos[1]);
 
                 context.SaveChanges();
             }
@@ -53,6 +56,24 @@ namespace GuessAPIUnitTests
                 context.Video.RemoveRange(context.Video);
                 context.SaveChanges();
             };
+        }
+
+        [TestMethod]
+        public async Task TestGetRandomTranscription()
+        {
+
+            using (var context = new guessContext(options))
+            {
+                // make a new video controller
+                VideosController videosController = new VideosController(context, _mapper);
+
+                // get the result of GetRandomVideo method
+                ActionResult<IEnumerable<Video>> result = await videosController.GetRandomVideo();
+
+                // see if the result is null
+                Assert.IsNotNull(result);
+
+            }
         }
 
     }

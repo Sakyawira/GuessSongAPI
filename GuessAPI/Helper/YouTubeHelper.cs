@@ -99,12 +99,16 @@ namespace GuessAPI.Helper
         {
             String subtitleLink = GetTranscriptionLink(videoId);
 
-            // Use XmlDocument to load the subtitle XML.
             XmlDocument doc = new XmlDocument();
+
+
+            // try to Use XmlDocument to load the subtitle XML.
             try
             {
                 doc.Load(subtitleLink);
             }
+
+            // load the US version of the caption if fail
             catch
             {
                 doc.Load(subtitleLink + "-US");

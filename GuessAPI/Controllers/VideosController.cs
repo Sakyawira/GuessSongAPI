@@ -266,14 +266,21 @@ namespace GuessAPI.Controllers
             {
                 // randomize the id
                 Random rnd = new Random();
+
+                // rnd.next's upper bound is EXCLUSIVE
                 int rng = rnd.Next(0, sizeOfList);
                 int id = _context.Video.ToListAsync().Result[rng].VideoId;
                 int id2 = _context.Video.ToListAsync().Result[rng].VideoId;
+
+                // if the video selected is not 0, set the previous video to the second video
                 if (rng != 0)
                 {
                     id2 = _context.Video.ToListAsync().Result[rng - 1].VideoId;
                 }
-                else if (rng != videos.Count)
+
+                //  if the video selected is 0 but not the last video and there is more than one video,
+                // set video 2 into the next video
+                else if (rng != videos.Count - 1 && videos.Count > 1)
                 {
                     id2 = _context.Video.ToListAsync().Result[rng + 1].VideoId;
                 }
@@ -284,6 +291,7 @@ namespace GuessAPI.Controllers
                 {
                     isget = true;
                 }
+
                 videos.RemoveAll(video => video.Transcription.Count == 0);
                 videos.RemoveAll(video => video.VideoId != id && video.VideoId != id2);
                 //if (rng != 0 && rng != videos.Count)
