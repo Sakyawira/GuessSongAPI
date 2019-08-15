@@ -278,7 +278,7 @@ namespace GuessAPI.Controllers
                     id2 = _context.Video.ToListAsync().Result[rng - 1].VideoId;
                 }
 
-                //  if the video selected is 0 but not the last video and there is more than one video,
+                //  if the video selected is at index 0 but not the last video and there is more than one video,
                 // set video 2 into the next video
                 else if (rng != videos.Count - 1 && videos.Count > 1)
                 {

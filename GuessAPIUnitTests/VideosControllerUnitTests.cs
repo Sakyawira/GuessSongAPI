@@ -33,6 +33,8 @@ namespace GuessAPIUnitTests
         };
 
         private readonly IMapper _mapper;
+        public static URLDTO _URL = new URLDTO();
+        
 
         [TestInitialize]
         public void SetupDb()
@@ -45,6 +47,7 @@ namespace GuessAPIUnitTests
 
                 context.SaveChanges();
             }
+            _URL.URL = "https://www.youtube.com/watch?v=uIAScvNDQpI";
         }
 
         [TestCleanup]
@@ -56,10 +59,11 @@ namespace GuessAPIUnitTests
                 context.Video.RemoveRange(context.Video);
                 context.SaveChanges();
             };
+            _URL.URL = "";
         }
 
         [TestMethod]
-        public async Task TestGetRandomTranscription()
+        public async Task TestGetRandomVideo()
         {
 
             using (var context = new guessContext(options))
@@ -69,6 +73,24 @@ namespace GuessAPIUnitTests
 
                 // get the result of GetRandomVideo method
                 ActionResult<IEnumerable<Video>> result = await videosController.GetRandomVideo();
+
+                // see if the result is null
+                Assert.IsNotNull(result);
+
+            }
+        }
+
+        [TestMethod]
+        public async Task TestPostVideo()
+        {
+
+            using (var context = new guessContext(options))
+            {
+                // make a new video controller
+                VideosController videosController = new VideosController(context, _mapper);
+
+                // get the result of GetRandomVideo method
+               ActionResult<Video> result = await videosController.PostVideo(_URL);
 
                 // see if the result is null
                 Assert.IsNotNull(result);
