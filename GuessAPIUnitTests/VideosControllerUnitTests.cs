@@ -90,7 +90,7 @@ namespace GuessAPIUnitTests
                 VideosController videosController = new VideosController(context, _mapper);
 
                 // get the result of GetRandomVideo method
-               ActionResult<Video> result = await videosController.PostVideo(_URL);
+                ActionResult<Video> result = await videosController.PostVideo(_URL);
 
                 // see if the result is null
                 Assert.IsNotNull(result);
