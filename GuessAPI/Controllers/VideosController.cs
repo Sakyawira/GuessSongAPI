@@ -213,7 +213,7 @@ namespace GuessAPI.Controllers
             var sizeOfList = _context.Video.ToListAsync().Result.Count;
             bool isGet = false;
 
-            // initialize transcription
+            // Initialize transcription
             var ivideo = await _context.Video.FindAsync(0);
             // Choose transcriptions that has the phrase 
             var videos = await _context.Video.Select(video => new Video
@@ -227,10 +227,10 @@ namespace GuessAPI.Controllers
                 Transcription = video.Transcription
             }).ToListAsync();
 
-            // only break after it finds a non-null transcription
+            // Only break after it finds a non-null transcription
             while (isGet == false)
             {
-                // randomize the id
+                // Randomize the id
                 Random rnd = new Random();
 
                 // rnd.next's upper bound is EXCLUSIVE
@@ -238,27 +238,28 @@ namespace GuessAPI.Controllers
                 int id = _context.Video.ToListAsync().Result[rng].VideoId;
                 int id2 = _context.Video.ToListAsync().Result[rng].VideoId;
 
-                // if the video selected is not 0, set the previous video to the second video
+                // If the video selected is not 0, set the previous video to the second video
                 if (rng != 0)
                 {
                     id2 = _context.Video.ToListAsync().Result[rng - 1].VideoId;
                 }
 
-                //  if the video selected is at index 0 but not the last video and there is more than one video,
-                // set video 2 into the next video
+                // If the video selected is at index 0 but not the last video and there is more than one video,
+                // Set video 2 into the next video
                 else if (rng != videos.Count - 1 && videos.Count > 1)
                 {
                     id2 = _context.Video.ToListAsync().Result[rng + 1].VideoId;
                 }
-                // find the transcription based on the generated id
+                // Find the transcription based on the generated id
                 ivideo = await _context.Video.FindAsync(id);
 
                 if (ivideo != null)
                 {
                     isGet = true;
                 }
-
+                // Remove all videos with 0 transcription
                 videos.RemoveAll(video => video.Transcription.Count == 0);
+                // Remove all videos except those with ID or ID2 as their PK
                 videos.RemoveAll(video => video.VideoId != id && video.VideoId != id2);
             }
             return Ok(videos);
