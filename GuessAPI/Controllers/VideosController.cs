@@ -178,31 +178,6 @@ namespace GuessAPI.Controllers
             return video;
         }
 
-        // GET api/Videos/SearchByTranscriptions/HelloWorld
-        //[HttpGet("SearchByTranscriptions/{searchString}")]
-        //public async Task<ActionResult<IEnumerable<Video>>> Search(string searchString)
-        //{
-        //    if (String.IsNullOrEmpty(searchString))
-        //    {
-        //        return BadRequest("Search string cannot be null or empty.");
-        //    }
-
-        //    // Choose transcriptions that has the phrase 
-        //    var videos = await _context.Video.Include(video => video.Transcription).Select(video => new Video {
-        //        VideoId = video.VideoId,
-        //        VideoTitle = video.VideoTitle,
-        //        VideoLength = video.VideoLength,
-        //        WebUrl = video.WebUrl,
-        //        ThumbnailUrl = video.ThumbnailUrl,
-        //        IsFavourite = video.IsFavourite,
-        //        Transcription = video.Transcription.Where(tran => tran.Phrase.Contains(searchString)).ToList()
-        //    }).ToListAsync();
-
-        //    // Removes all videos with empty transcription
-        //    videos.RemoveAll(video => video.Transcription.Count == 0);
-        //    return Ok(videos);
-
-        //}
 
         // GET: api/Videos
         [HttpGet("GetRandomVideo")]
