@@ -20,7 +20,7 @@ namespace GuessAPI.CentralHub
 
         public async Task AddVideo()
         {
-            await Clients.All.SendAsync("UpdateVideoList");
+            await Clients.All.SendAsync("VideoAdded");
         }
 
         public async Task DeleteVideo()
