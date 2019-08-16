@@ -11,11 +11,6 @@ namespace GuessAPI.Helper
 {
     class YouTubeHelper
     {
-        //public static void TestProgram()
-        //{
-        //    Console.WriteLine(GetYouTubeIdFromUrl("=HELLO"));
-        //    Console.ReadLine();
-        //}
 
         // Get the Youtube video id from video's url
         public static String GetYouTubeIdFromUrl(String videoUrl) {
@@ -33,13 +28,13 @@ namespace GuessAPI.Helper
         {
             String apiKey = "AIzaSyBqwfIVpvsm_0sbGEGAfr08qivmYmKdXEQ";
 
-            // create a youtube api link using the youtube video id and api key to get information of the video
+            // Create a youtube api link using the youtube video id and api key to get information of the video
             String YouTubeApiUrL = "https://www.googleapis.com/youtube/v3/videos?id=" + youtubeId + "&key=" + apiKey + "&part=snippet,contentDetails";
 
             // Grab the JSON string from the api link using an http client.
             String videoInfoJson = new WebClient().DownloadString(YouTubeApiUrL);
 
-            // Using dynamic object helps us to more effciently extract infomation from a large JSON String.
+            // Extract information from the JSON String using dynamic object.
             dynamic jsonObj = JsonConvert.DeserializeObject<dynamic>(videoInfoJson);
 
             // Extract information from the dynamic object.
@@ -48,11 +43,11 @@ namespace GuessAPI.Helper
             String durationString = jsonObj["items"][0]["contentDetails"]["duration"];
             String videoUrl = "https://www.youtube.com/watch?v=" + youtubeId;
 
-            // duration is given in this format: PT4M17S, we need to use a simple parser to get the duration in seconds.
+            // Get the duration of video using a parser 
             TimeSpan videoDuration = XmlConvert.ToTimeSpan(durationString);
             int duration = (int)videoDuration.TotalSeconds;
 
-            // Create a new Video Object from the model defined in the API.
+            // Create a new Video Object using the API's Video model definition.
             Video video = new Video
             {
                 VideoTitle = title,
@@ -75,29 +70,6 @@ namespace GuessAPI.Helper
             return true;
         }
 
-        private static String GetTranscriptionLink(String youtubeId)
-        {
-            String youTubeVideoUrl = "https://www.youtube.com/watch?v=" + youtubeId;
-
-            // Grab the JSON string from the api link using an http client.
-            // Download the source code using a Web Client.
-            String htmlSource = new WebClient().DownloadString(youTubeVideoUrl);
-
-            // Use regular expression to find the link with the transcription
-            String pattern = "timedtext.+?lang=";
-            Match match = Regex.Match(htmlSource, pattern);
-            if (match.ToString() != "")
-            {
-                String transcriptionLink = "https://www.youtube.com/api/" + match + "en";
-                transcriptionLink = CleanLink(transcriptionLink);
-                return transcriptionLink;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         // Get list of transcription from video id
         public static List<Transcription> GetTranscriptions(String videoId)
         {
@@ -106,18 +78,19 @@ namespace GuessAPI.Helper
             XmlDocument doc = new XmlDocument();
 
 
-            // try to Use XmlDocument to load the transcription XML.
+            // Try to Use XmlDocument to load the transcription XML.
             try
             {
                 doc.Load(transcriptionLink);
             }
 
-            // load the US version of the transcription if fail
+            // Load the US version of the transcription if fail
             catch
             {
                 doc.Load(transcriptionLink + "-US");
             }
            
+            // Set the root node to the first Child Node
             XmlNode root = doc.ChildNodes[1];
 
             // Go through each tag and look for start time and phrase.
@@ -126,8 +99,7 @@ namespace GuessAPI.Helper
             {
                 for (int i = 0; i < root.ChildNodes.Count; i++)
                 {
-                    // Decode HTTP characters to text
-                    // e.g. &#39; -> '
+                    // Decode HTTP characters to text using HTMLDecode
                     String phrase = root.ChildNodes[i].InnerText;
                     phrase = HttpUtility.HtmlDecode(phrase);
 
@@ -142,7 +114,32 @@ namespace GuessAPI.Helper
             }
             return transcriptions;
         }
-        
+
+        // Get the Transcription Link of a Youtube Video using its Youtube Video ID
+        private static String GetTranscriptionLink(String youtubeId)
+        {
+            String youTubeVideoUrl = "https://www.youtube.com/watch?v=" + youtubeId;
+
+            // Download the source code of the youtube video using a Web Client.
+            String htmlSource = new WebClient().DownloadString(youTubeVideoUrl);
+
+            // Find strings with the link to the transcription
+            // by matching a string pattern
+            String pattern = "timedtext.+?lang=";
+            Match match = Regex.Match(htmlSource, pattern);
+            if (match.ToString() != "")
+            {
+                String transcriptionLink = "https://www.youtube.com/api/" + match + "en";
+                transcriptionLink = CleanLink(transcriptionLink);
+                return transcriptionLink;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        // Clean the Transcription Link from unreadable characters
         private static String CleanLink(String transcriptionLink)
         {
             transcriptionLink = transcriptionLink.Replace("\\\\u0026", "&");
