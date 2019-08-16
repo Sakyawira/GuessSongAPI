@@ -11,7 +11,7 @@ namespace GuessAPI.CentralHub
         public static HashSet<string> ConnectedIds = new HashSet<string>();
     }
 
-    public class SignalrHub : Hub
+    public class SignalRHub : Hub
     {
         public async Task BroadcastMessage()
         {
@@ -32,7 +32,7 @@ namespace GuessAPI.CentralHub
         {
             UserHandler.ConnectedIds.Add(Context.ConnectionId);
             int usersCount = UserHandler.ConnectedIds.Count();
-            Clients.All.SendAsync("ShowUserCounts", usersCount);
+            Clients.All.SendAsync("CountUsers", usersCount);
             return base.OnConnectedAsync();
         }
 
@@ -40,7 +40,7 @@ namespace GuessAPI.CentralHub
         {
             UserHandler.ConnectedIds.Remove(Context.ConnectionId);
             int usersCount = UserHandler.ConnectedIds.Count();
-            Clients.All.SendAsync("ShowUserCounts", usersCount);
+            Clients.All.SendAsync("CountUsers", usersCount);
             return base.OnDisconnectedAsync(ex);
         }
     }

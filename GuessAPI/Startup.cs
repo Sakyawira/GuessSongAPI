@@ -75,7 +75,7 @@ namespace GuessAPI
             app.UseFileServer();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SignalrHub>("/hub");
+                routes.MapHub<SignalRHub>("/hub");
             });
 
             //app.UseCors(builder =>
