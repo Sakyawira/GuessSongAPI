@@ -68,13 +68,13 @@ namespace GuessAPIUnitTests
 
             using (var context = new GuessContext(Options))
             {
-                // make a new video controller
+                // Make a new video controller
                 VideosController videosController = new VideosController(context, _mapper);
 
-                // get the result of GetRandomVideo method
+                // Get the result of GetRandomVideo method
                 ActionResult<IEnumerable<Video>> result = await videosController.GetRandomVideo();
 
-                // see if the result is null
+                // Check whether the result is null
                 Assert.IsNotNull(result);
 
             }
@@ -86,13 +86,13 @@ namespace GuessAPIUnitTests
 
             using (var context = new GuessContext(Options))
             {
-                // make a new video controller
+                // Make a new video controller
                 VideosController videosController = new VideosController(context, _mapper);
 
-                // get the result of GetRandomVideo method
+                // Get the result of PostVideo method
                 ActionResult<Video> result = await videosController.PostVideo(Url);
 
-                // see if the result is null
+                // Check whether the result is null
                 Assert.IsNotNull(result);
 
             }

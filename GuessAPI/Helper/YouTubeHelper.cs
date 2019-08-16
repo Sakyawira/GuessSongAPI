@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace GuessAPI.Helper
 {
-    class YouTubeHelper
+    public class YouTubeHelper
     {
 
         // Get the Youtube video id from video's url

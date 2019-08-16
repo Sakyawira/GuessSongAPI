@@ -13,7 +13,7 @@ using GuessAPI.Helper;
 namespace GuessAPI.Controllers
 {
     // DTO (Data Transfer object) inner class to help with Swagger documentation
-    // Allow swagger ui to recognize the url to display it in the swagger ui
+    // Allow Swagger UI to recognize and display the URL
     public class Urldto
     {
         public String Url { get; set; }
