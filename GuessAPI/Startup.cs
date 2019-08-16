@@ -78,11 +78,6 @@ namespace GuessAPI
                 routes.MapHub<SignalRHub>("/hub");
             });
 
-            //app.UseCors(builder =>
-            //{
-            //    builder.WithOrigins("https://sakyafrontend.azurewebsites.net/").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-            //});
-
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 

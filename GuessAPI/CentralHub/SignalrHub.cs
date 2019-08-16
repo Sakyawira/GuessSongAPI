@@ -15,10 +15,10 @@ namespace GuessAPI.CentralHub
     {
         public async Task BroadcastMessage()
         {
-            await Clients.All.SendAsync("Connect");
+            await Clients.All.SendAsync("Join");
         }
 
-        public async Task VideoAdded()
+        public async Task AddVideo()
         {
             await Clients.All.SendAsync("UpdateVideoList");
         }
