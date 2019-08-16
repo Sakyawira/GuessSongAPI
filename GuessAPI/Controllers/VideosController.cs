@@ -169,7 +169,7 @@ namespace GuessAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Video>> DeleteVideo(int id)
         {
-            List<int> videoIDlist = new List<int>(new int[] { 1, 10, 11, 12, 15 });
+            //List<int> videoIDlist = new List<int>(new int[] { 1, 10, 11, 12, 15 });
             //if (videoIDlist.Contains(id))
             //{
             //    return BadRequest("The video cannot be deleted");
@@ -269,11 +269,6 @@ namespace GuessAPI.Controllers
 
                 videos.RemoveAll(video => video.Transcription.Count == 0);
                 videos.RemoveAll(video => video.VideoId != id && video.VideoId != id2);
-                //if (rng != 0 && rng != videos.Count)
-                //{
-                //    videos.RemoveRange(0, rng);
-                //    videos.RemoveRange(rng + 2, );
-                //}
             }
             return Ok(videos);
         }
