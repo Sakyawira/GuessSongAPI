@@ -13,21 +13,25 @@ namespace GuessAPI.CentralHub
 
     public class SignalRHub : Hub
     {
+        // Inform all clients that another client has joined
         public async Task BroadcastMessage()
         {
             await Clients.All.SendAsync("Join");
         }
 
+        // Inform all clients that a video has been added
         public async Task AddVideo()
         {
             await Clients.All.SendAsync("VideoAdded");
         }
 
+        // Inform all clients that a video has been deleted
         public async Task DeleteVideo()
         {
             await Clients.All.SendAsync("VideoDeleted");
         }
 
+        // Execute at the start of connection
         public override Task OnConnectedAsync()
         {
             UserHandler.ConnectedIds.Add(Context.ConnectionId);
@@ -36,6 +40,7 @@ namespace GuessAPI.CentralHub
             return base.OnConnectedAsync();
         }
 
+        // Execute at the end of connection
         public override Task OnDisconnectedAsync(Exception ex)
         {
             UserHandler.ConnectedIds.Remove(Context.ConnectionId);

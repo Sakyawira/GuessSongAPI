@@ -35,17 +35,18 @@ namespace GuessAPI.Controllers
             var sizeOfList = _context.Transcription.ToListAsync().Result.Count;
             bool isget = false;
 
-            // initialize transcription
+            // Initialize transcription
             var transcription = await _context.Transcription.FindAsync(0);
 
-            // only break after it finds a non-null transcription
+            // Only break after it finds a non-null transcription
             while (isget == false)
             {
-                // randomize the id
+                // Randomize a number between 0 and the size of the transcription list
+                // Use that number to get a random id
                 Random rnd = new Random();
                 int id = _context.Transcription.ToListAsync().Result[rnd.Next(0, sizeOfList)].TranscriptionId;
 
-                // find the transcription based on the generated id
+                // Find the transcription based on the generated id
                 transcription = await _context.Transcription.FindAsync(id);
 
                 if (transcription != null)
@@ -54,10 +55,10 @@ namespace GuessAPI.Controllers
                 }
             }
 
-            if (String.IsNullOrEmpty(transcription.Phrase))
-            {
-                return BadRequest("Search string cannot be null or empty.");
-            }
+            //if (String.IsNullOrEmpty(transcription.Phrase))
+            //{
+            //    return BadRequest("Search string cannot be null or empty.");
+            //}
 
             // Choose transcriptions that has the phrase 
             var videos = await _context.Video.Include(video => video.Transcription).Select(video => new Video
@@ -85,12 +86,7 @@ namespace GuessAPI.Controllers
                 iCount = videos.Count - 1;
                 videos.RemoveRange(1, iCount);
             }
-            //else if (videos.Count == 1)
-            //{
-            //    videos.RemoveRange(1, 1);
-            //}
            
-            //videos[0].IsFavourite = true;
             return Ok(videos);
 
         }

@@ -12,7 +12,7 @@ using GuessAPI.Helper;
 
 namespace GuessAPI.Controllers
 {
-    // DTO (Data Transfer object) inner class to help with Swagger documentation
+    // Define DTO (Data Transfer object) inner class
     // Allow Swagger UI to recognize and display the URL
     public class Urldto
     {
@@ -91,15 +91,15 @@ namespace GuessAPI.Controllers
         [HttpPatch("update/{id}")]
         public VideoDto Patch(int id, [FromBody]JsonPatchDocument<VideoDto> videoPatch)
         {
-            //get original video object from the database
+            // Get the original video from the database
             Video originVideo = _videoRepository.GetVideoById(id);
-            //use automapper to map that to DTO object
+            // Map the original video to DTO object
             VideoDto videoDto = _mapper.Map<VideoDto>(originVideo);
-            //apply the patch to that DTO
+            // Apply the patch to the DTO
             videoPatch.ApplyTo(videoDto);
-            //use automapper to map the DTO back ontop of the database object
+            // Map the DTO back on top of the original video
             _mapper.Map(videoDto, originVideo);
-            //update video in the database
+            // update video in the database
             _context.Update(originVideo);
             _context.SaveChanges();
             return videoDto;
@@ -114,7 +114,7 @@ namespace GuessAPI.Controllers
             Video video;
             try
             {
-                // Constructing the video object from our helper function
+                // Construct a video using YoutubeHelper's function
                 videoUrl = data.Url;
                 youtubeId = YouTubeHelper.GetYouTubeIdFromUrl(videoUrl);
                 video = YouTubeHelper.GetVideoInfo(youtubeId);
@@ -124,28 +124,24 @@ namespace GuessAPI.Controllers
                 return BadRequest("Invalid YouTube URL");
             }
 
-            // Determine if we can get transcriptions from YouTube
+            // Determine whether its transcription is available on YouTube
             if (!YouTubeHelper.CanGetTranscriptions(youtubeId))
             {
                 return BadRequest("Subtitle does not exist on YouTube, failed to add video");
             }
 
-            // Add this video object to the database
+            // Add this video to the database
             _context.Video.Add(video);
             await _context.SaveChangesAsync();
 
-           // video.VideoId = video.VideoId % 10;
-
-            // Get the primary key of the newly created video record
+            // Get the primary key of the newly created video
             int id = video.VideoId;
 
-            // This is needed because context are NOT thread safe, therefore we create another context for the following task.
-            // We will be using this to insert transcriptions into the database on a seperate thread
-            // So that it doesn't block the API.
+            // Insert transcriptions into the database on using a different context 
             GuessContext tempContext = new GuessContext();
             TranscriptionsController transcriptionsController = new TranscriptionsController(tempContext);
 
-            // This will be executed in the background.
+            // This will be executed in the background on a separate thread 
             Task addCaptions = Task.Run(async () =>
             {
                 List<Transcription> transcriptions = new List<Transcription>();
@@ -153,15 +149,16 @@ namespace GuessAPI.Controllers
 
                 for (int i = 0; i < transcriptions.Count; i++)
                 {
-                    // Get the transcription objects form transcriptions and assign VideoId to id, the primary key of the newly inserted video
+                    // Get the transcription objects form transcriptions
                     Transcription transcription = transcriptions.ElementAt(i);
+                    //  Assign the transcription's VideoId to the id of the newly inserted video
                     transcription.VideoId = id;
-                    // Add this transcription to the database
+                    // Add the transcription to the database
                     await transcriptionsController.PostTranscription(transcription);
                 }
             });
 
-            // Return success code and the info on the video object
+            // Return Video and a success code
             return CreatedAtAction("GetVideo", new { id = video.VideoId }, video);
         }
 
@@ -169,12 +166,6 @@ namespace GuessAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Video>> DeleteVideo(int id)
         {
-            //List<int> videoIDlist = new List<int>(new int[] { 1, 10, 11, 12, 15 });
-            //if (videoIDlist.Contains(id))
-            //{
-            //    return BadRequest("The video cannot be deleted");
-            //}
-             //_context.Video.
             var video = await _context.Video.FindAsync(id);
             if (video == null)
             {
@@ -188,30 +179,30 @@ namespace GuessAPI.Controllers
         }
 
         // GET api/Videos/SearchByTranscriptions/HelloWorld
-        [HttpGet("SearchByTranscriptions/{searchString}")]
-        public async Task<ActionResult<IEnumerable<Video>>> Search(string searchString)
-        {
-            if (String.IsNullOrEmpty(searchString))
-            {
-                return BadRequest("Search string cannot be null or empty.");
-            }
+        //[HttpGet("SearchByTranscriptions/{searchString}")]
+        //public async Task<ActionResult<IEnumerable<Video>>> Search(string searchString)
+        //{
+        //    if (String.IsNullOrEmpty(searchString))
+        //    {
+        //        return BadRequest("Search string cannot be null or empty.");
+        //    }
 
-            // Choose transcriptions that has the phrase 
-            var videos = await _context.Video.Include(video => video.Transcription).Select(video => new Video {
-                VideoId = video.VideoId,
-                VideoTitle = video.VideoTitle,
-                VideoLength = video.VideoLength,
-                WebUrl = video.WebUrl,
-                ThumbnailUrl = video.ThumbnailUrl,
-                IsFavourite = video.IsFavourite,
-                Transcription = video.Transcription.Where(tran => tran.Phrase.Contains(searchString)).ToList()
-            }).ToListAsync();
+        //    // Choose transcriptions that has the phrase 
+        //    var videos = await _context.Video.Include(video => video.Transcription).Select(video => new Video {
+        //        VideoId = video.VideoId,
+        //        VideoTitle = video.VideoTitle,
+        //        VideoLength = video.VideoLength,
+        //        WebUrl = video.WebUrl,
+        //        ThumbnailUrl = video.ThumbnailUrl,
+        //        IsFavourite = video.IsFavourite,
+        //        Transcription = video.Transcription.Where(tran => tran.Phrase.Contains(searchString)).ToList()
+        //    }).ToListAsync();
 
-            // Removes all videos with empty transcription
-            videos.RemoveAll(video => video.Transcription.Count == 0);
-            return Ok(videos);
+        //    // Removes all videos with empty transcription
+        //    videos.RemoveAll(video => video.Transcription.Count == 0);
+        //    return Ok(videos);
 
-        }
+        //}
 
         // GET: api/Videos
         [HttpGet("GetRandomVideo")]
