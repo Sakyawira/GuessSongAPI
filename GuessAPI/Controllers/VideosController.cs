@@ -140,12 +140,12 @@ namespace GuessAPI.Controllers
             // Insert transcriptions into the database on using a different context 
           //  GuessContext tempContext = new GuessContext();
             TranscriptionsController transcriptionsController = new TranscriptionsController(_context);
-          LeaderBoardsController lbController = new LeaderBoardsController(_context);
+          //LeaderBoardsController lbController = new LeaderBoardsController(_context);
 
             // This will be executed in the background on a separate thread 
-            //Task addCaptions = Task.Run(async () =>
-            //{
-                List<Transcription> transcriptions = new List<Transcription>();
+           // Task addCaptions = Task.Run(async () =>
+           //{
+               List<Transcription> transcriptions = new List<Transcription>();
                 transcriptions = YouTubeHelper.GetTranscriptions(youtubeId);
 
                 for (int i = 0; i < transcriptions.Count; i++)
@@ -157,14 +157,9 @@ namespace GuessAPI.Controllers
                     transcription.Video = video;
                     // Add the transcription to the database
                     await transcriptionsController.PostTranscription(transcription);
-
-                    LeaderBoard leaderBoard = new LeaderBoard();
-                    leaderBoard.PlayerId = 1;
-                    leaderBoard.PlayerName = "b";
-                    leaderBoard.Score = 100;
-                    await lbController.PostLeaderBoard(leaderBoard);
                 }
-            //});
+        //});
+           // await Task.Yield();
 
             // Return Video and a success code
             return CreatedAtAction("GetVideo", new { id = video.VideoId }, video);
