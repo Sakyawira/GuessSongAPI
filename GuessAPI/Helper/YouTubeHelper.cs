@@ -73,7 +73,7 @@ namespace GuessAPI.Helper
         // Get list of transcription from video id
         public static List<Transcription> GetTranscriptions(String videoId)
         {
-            String transcriptionLink = GetTranscriptionLink(videoId);
+           // String transcriptionLink = GetTranscriptionLink(videoId);
 
             XmlDocument doc = new XmlDocument();
 
@@ -81,13 +81,13 @@ namespace GuessAPI.Helper
             // Try to Use XmlDocument to load the transcription XML.
             try
             {
-                doc.Load(transcriptionLink);
+                doc.Load("http://video.google.com/timedtext?lang=en&v=" +videoId);
             }
 
             // Load the US version of the transcription if fail
             catch
             {
-                doc.Load(transcriptionLink + "-US");
+              //  doc.Load(transcriptionLink + "-US");
             }
            
             // Set the root node to the first Child Node
