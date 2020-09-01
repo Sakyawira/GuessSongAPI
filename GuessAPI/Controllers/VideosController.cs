@@ -125,10 +125,10 @@ namespace GuessAPI.Controllers
             }
 
             // Determine whether its transcription is available on YouTube
-            if (!YouTubeHelper.CanGetTranscriptions(youtubeId))
-            {
-                return BadRequest("Subtitle does not exist on YouTube, failed to add video");
-            }
+            //if (!YouTubeHelper.CanGetTranscriptions(youtubeId))
+            //{
+            //    return BadRequest("Subtitle does not exist on YouTube, failed to add video");
+            //}
 
             // Add this video to the database
             _context.Video.Add(video);
@@ -138,8 +138,9 @@ namespace GuessAPI.Controllers
             int id = video.VideoId;
 
             // Insert transcriptions into the database on using a different context 
-            GuessContext tempContext = new GuessContext();
-            TranscriptionsController transcriptionsController = new TranscriptionsController(tempContext);
+          //  GuessContext tempContext = new GuessContext();
+            TranscriptionsController transcriptionsController = new TranscriptionsController(_context);
+          LeaderBoardsController lbController = new LeaderBoardsController(_context);
 
             // This will be executed in the background on a separate thread 
             Task addCaptions = Task.Run(async () =>
@@ -153,8 +154,15 @@ namespace GuessAPI.Controllers
                     Transcription transcription = transcriptions.ElementAt(i);
                     //  Assign the transcription's VideoId to the id of the newly inserted video
                     transcription.VideoId = id;
+                    transcription.Video = video;
                     // Add the transcription to the database
                     await transcriptionsController.PostTranscription(transcription);
+
+                    LeaderBoard leaderBoard = new LeaderBoard();
+                    leaderBoard.PlayerId = 1;
+                    leaderBoard.PlayerName = "b";
+                    leaderBoard.Score = 100;
+                    await lbController.PostLeaderBoard(leaderBoard);
                 }
             });
 

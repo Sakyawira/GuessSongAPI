@@ -139,8 +139,17 @@ namespace GuessAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Transcription>> PostTranscription(Transcription transcription)
         {
-            _context.Transcription.Add(transcription);
-            await _context.SaveChangesAsync();
+            Console.WriteLine("Posting Transcript");
+            //try
+            //{
+                _context.Transcription.Add(transcription);
+                await _context.SaveChangesAsync();
+            //}
+            //catch
+            //{
+            //    return BadRequest("Fail to add to context");
+            //}
+            
 
             return CreatedAtAction("GetTranscription", new { id = transcription.TranscriptionId }, transcription);
         }
