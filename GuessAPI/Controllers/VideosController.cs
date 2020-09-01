@@ -143,8 +143,8 @@ namespace GuessAPI.Controllers
           LeaderBoardsController lbController = new LeaderBoardsController(_context);
 
             // This will be executed in the background on a separate thread 
-            Task addCaptions = Task.Run(async () =>
-            {
+            //Task addCaptions = Task.Run(async () =>
+            //{
                 List<Transcription> transcriptions = new List<Transcription>();
                 transcriptions = YouTubeHelper.GetTranscriptions(youtubeId);
 
@@ -164,7 +164,7 @@ namespace GuessAPI.Controllers
                     leaderBoard.Score = 100;
                     await lbController.PostLeaderBoard(leaderBoard);
                 }
-            });
+            //});
 
             // Return Video and a success code
             return CreatedAtAction("GetVideo", new { id = video.VideoId }, video);
