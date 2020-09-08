@@ -1,1 +1,1 @@
-GuessSongAPI
+A back-end for [a quiz](https://guesssong.azurewebsites.net/) web-app, created using ASP.NET core and C#. For the Front-End source code and documentation, please look [here](https://github.com/Sakyawira/Guess).
